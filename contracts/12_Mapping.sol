@@ -34,3 +34,38 @@ contract Mapping {
         delete myMap[_addr];
     }
 }
+
+contract NestedMapping {
+    /*
+    Nested mapping (mapping from address to another mapping)
+
+    GET
+    - you can get values from a nested mapping
+    - even when it is not initialized
+    - example: get("0xAlice", 1); = nested["0xAlice"][1]; Result: Does not exist (never initialized), in Solidity, mappings always return the default value if the key doesn't exist, for bool, the default value is false.
+
+    SET
+    - we assign true 
+    - example: set("0xAlice", 1, true); = nested["0xAlice"][1][true]; if you call get("0xAlice", 1); you receive true.
+    - call to get with another key: get("0xAlice", 2); = nested["0xAlice"][2] does not exist (never initialized) return default value for bool false
+
+    REMOVE
+    - delete a key
+    - example: remove("0xAlice", 1); = nested["0xAlice"][1];
+    - nested["0xAlice"][1] = false (default value) if you call get("0xAlice", 1); you receive false
+    */
+
+    mapping(address => mapping(uint => bool)) public nested;
+
+    function get(address _addr1, uint _i) public view returns (bool) {
+        return nested[_addr1][_i]; //false
+    }
+
+    function set(address _addr1, uint _i, bool _boo) public {
+        nested[_addr1][_i] = _boo; //assign bool value
+    }
+
+    function remove(address _addr1, uint _i) public {
+        delete nested[_addr1][_i];
+    }
+}
